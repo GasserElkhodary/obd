@@ -1,5 +1,5 @@
 const statusDiv = document.getElementById('status');
-const socket = new WebSocket('ws://localhost:8080');
+const socket = new WebSocket("wss://random-id.trycloudflare.com");
 
 const dataElements = {
     rpm: document.getElementById('rpm'),
@@ -151,4 +151,5 @@ socket.onerror = function(error) {
     setStatus('Status: Connection error. Is the Python server running?', 'error');
     resetDashboard();
     stopCamera();
+
 };
