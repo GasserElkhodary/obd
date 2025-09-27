@@ -21,7 +21,6 @@ body {
     align-items: center;
     min-height: 100vh;
 }
-
 h1 {
     color: var(--primary-text);
     margin-bottom: 25px;
@@ -29,103 +28,76 @@ h1 {
     font-weight: 600;
     text-align: center;
 }
-
 #camera-controls {
     margin-bottom: 20px;
     display: flex;
     gap: 15px;
     align-items: center;
 }
-
-/* New Media Container styles */
-#media-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px; /* Space between camera and lidar */
-    width: 100%;
-    max-width: 1200px; /* Adjust as needed */
-    margin-bottom: 20px;
-}
-
-/* Updated Camera Container styles */
-#camera-container {
-    background-color: #000;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    width: 50%; /* Take half the space */
-    aspect-ratio: 16 / 9; /* Maintain widescreen ratio */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* New Lidar Container styles */
-#lidar-container {
-    background-color: #000;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    width: 50%; /* Take the other half */
-    aspect-ratio: 16 / 9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-
-#lidar-canvas {
-    width: 100%;
-    height: 100%;
-}
-
-.media-label {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(0,0,0,0.5);
-    color: var(--primary-text);
-    padding: 5px 10px;
+#camera-toggle-btn {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
     border-radius: 5px;
-    font-size: 0.9em;
-    font-weight: bold;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
-
+#camera-toggle-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+#camera-toggle-status {
+    color: var(--secondary-text);
+}
+#camera-container {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 30px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: none; /* Hidden by default */
+    position: relative;
+}
+#camera-container.visible {
+    display: block;
+}
 #cameraFeed {
     width: 100%;
-    height: 100%;
-    display: none;
-    object-fit: cover;
+    height: auto;
+    display: block;
 }
-
 #camera-placeholder {
-    color: var(--secondary-text);
+    min-height: 200px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
+    align-items: center;
+    color: var(--secondary-text);
+    font-size: 1.2em;
 }
-
 #status {
-    width: 100%;
-    max-width: 1200px;
+    font-size: 1em;
+    margin-bottom: 25px;
+    height: 1.5em;
     text-align: center;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
     font-weight: 500;
 }
+#status.error { color: var(--error-color); }
+#status.success { color: var(--success-color); }
+#status.warning { color: var(--warning-color); }
 
-/* Other styles remain the same */
+
 #dashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1300px;
     padding-bottom: 50px;
 }
 .metric {
@@ -141,6 +113,7 @@ h1 {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
+
 .metric-label {
     font-size: 1em;
     color: var(--secondary-text);
@@ -163,17 +136,28 @@ h1 {
     font-weight: 400;
     color: var(--secondary-text);
     margin-left: 8px;
-    padding-bottom: 0.3em;
+    padding-bottom: 0.2em;
 }
-.text-status, .small-text {
-    font-size: 1.5em; /* Smaller font for text values */
+.text-status {
+    font-size: 2.2em;
+}
+#ignitionState.Off { color: var(--error-color); }
+#ignitionState.On { color: var(--warning-color); }
+#ignitionState.Running { color: var(--success-color); }
+
+.metric-value.small-text {
+    font-size: 1.2em;
     font-weight: 500;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    word-break: break-all;
+    padding: 0 5px;
 }
-.ignitionState.Off { color: var(--error-color); }
-.ignitionState.On { color: var(--warning-color); }
-.ignitionState.Running { color: var(--success-color); }
-.dtc.has-dtc { color: var(--error-color); }
-.dtc.no-dtc { color: var(--success-color); }
-.status.error { background-color: var(--error-color); color: white; }
-.status.success { background-color: var(--success-color); color: white; }
-.status.warning { background-color: var(--warning-color); color: #111; }
+.metric-value.small-text.no-dtc {
+    color: var(--success-color);
+}
+.metric-value.small-text.has-dtc {
+    color: var(--error-color);
+}
