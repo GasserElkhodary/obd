@@ -1,5 +1,5 @@
 const statusDiv = document.getElementById('status');
-const socket = new WebSocket('wss://your-url-here.loca.lt'); 
+const socket = new WebSocket('wss://curvy-memes-run.loca.lt'); 
 const dataElements = {
     rpm: document.getElementById('rpm'),
     speed: document.getElementById('speed'),
@@ -162,3 +162,4 @@ socket.onerror = function() {
     stopCamera();
     if (lidarAnimationId) cancelAnimationFrame(lidarAnimationId);
 };
+
