@@ -1,5 +1,5 @@
 const statusDiv = document.getElementById('status');
-const socket = new WebSocket('wss://shaky-candles-live.loca.lt');
+const socket = new WebSocket('wss://breezy-bobcats-help.loca.lt');
 const dataElements = {
     rpm: document.getElementById('rpm'),
     speed: document.getElementById('speed'),
@@ -152,6 +152,7 @@ socket.onerror = function(error) {
     stopCamera();
 
 };
+
 
 
 
