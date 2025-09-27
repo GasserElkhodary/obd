@@ -1,6 +1,5 @@
 const statusDiv = document.getElementById('status');
-// Use a real URL from your localtunnel or ngrok service
-const socket = new WebSocket('wss:purple-rivers-lay.loca.lt'); 
+const socket = new WebSocket('wss://your-url-here.loca.lt'); 
 const dataElements = {
     rpm: document.getElementById('rpm'),
     speed: document.getElementById('speed'),
@@ -21,7 +20,6 @@ const dataElements = {
 
 // --- Camera Elements and Logic ---
 const videoElement = document.getElementById('cameraFeed');
-const cameraContainer = document.getElementById('camera-container');
 const cameraToggleButton = document.getElementById('camera-toggle-btn');
 const cameraToggleStatus = document.getElementById('camera-toggle-status');
 const cameraPlaceholder = document.getElementById('camera-placeholder');
@@ -38,35 +36,20 @@ function setStatus(message, type = 'info') {
     statusDiv.className = `status ${type}`;
 }
 
-function resetDashboard() {
-    for (const key in dataElements) {
-        const element = dataElements[key];
-        if (element) {
-            if (element.children.length > 0 && element.children[0].tagName === 'SPAN') {
-                element.children[0].textContent = '---';
-            } else {
-                element.textContent = '---';
-            }
-        }
-    }
-}
-
 async function startCamera() {
-    cameraPlaceholder.style.display = 'flex';
+    cameraPlaceholder.textContent = 'Accessing Camera...';
     videoElement.style.display = 'none';
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         cameraStream = stream;
         videoElement.srcObject = stream;
         videoElement.style.display = 'block';
-        cameraPlaceholder.style.display = 'none';
         isCameraOn = true;
         cameraToggleButton.textContent = 'Hide Camera Feed';
         cameraToggleStatus.textContent = 'Camera is ON';
     } catch (err) {
         console.error("Error accessing camera: ", err);
         cameraPlaceholder.textContent = "Camera not available.";
-        isCameraOn = false;
     }
 }
 
@@ -75,7 +58,6 @@ function stopCamera() {
         cameraStream.getTracks().forEach(track => track.stop());
     }
     videoElement.style.display = 'none';
-    cameraPlaceholder.style.display = 'flex';
     cameraPlaceholder.textContent = 'Camera Paused';
     isCameraOn = false;
     cameraToggleButton.textContent = 'Show Camera Feed';
@@ -83,11 +65,7 @@ function stopCamera() {
 }
 
 function toggleCamera() {
-    if (isCameraOn) {
-        stopCamera();
-    } else {
-        startCamera();
-    }
+    isCameraOn ? stopCamera() : startCamera();
 }
 
 // --- Lidar Simulation Logic ---
@@ -95,100 +73,74 @@ function drawLidar() {
     const w = lidarCanvas.width;
     const h = lidarCanvas.height;
     const centerX = w / 2;
-    const centerY = h - 20; // Position the "car" at the bottom center
+    const centerY = h - 20;
 
-    lidarCtx.clearRect(0, 0, w, h);
     lidarCtx.fillStyle = '#000';
     lidarCtx.fillRect(0, 0, w, h);
 
-    // Draw the car representation
+    // Draw the car
     lidarCtx.fillStyle = '#007bff';
     lidarCtx.fillRect(centerX - 10, centerY - 5, 20, 10);
 
-    // Draw simulated lidar points
+    // Draw simulated points
     for (let i = 0; i < 200; i++) {
-        const angle = Math.random() * Math.PI; // 180-degree forward scan
+        const angle = Math.random() * Math.PI;
         const maxDist = Math.min(centerX, centerY);
-        
-        // Simulate some objects
         let distance = Math.random() * maxDist;
         if (Math.random() > 0.95) {
             distance = Math.random() * (maxDist * 0.4) + (maxDist * 0.2);
         }
-
         const x = centerX - Math.cos(angle) * distance;
         const y = centerY - Math.sin(angle) * distance;
-
-        lidarCtx.fillStyle = `rgba(0, 245, 212, ${1 - (distance / maxDist)})`; // Teal points, fade with distance
+        lidarCtx.fillStyle = `rgba(0, 245, 212, ${1 - (distance / maxDist)})`;
         lidarCtx.beginPath();
         lidarCtx.arc(x, y, 2, 0, Math.PI * 2);
         lidarCtx.fill();
     }
-
     lidarAnimationId = requestAnimationFrame(drawLidar);
 }
 
 function startLidar() {
-    // Resize canvas to fit container
     const rect = lidarCanvas.parentElement.getBoundingClientRect();
     lidarCanvas.width = rect.width;
     lidarCanvas.height = rect.height;
-    if (lidarAnimationId) {
-        cancelAnimationFrame(lidarAnimationId);
-    }
+    if (lidarAnimationId) cancelAnimationFrame(lidarAnimationId);
     drawLidar();
 }
 
 // Event Listeners
 cameraToggleButton.addEventListener('click', toggleCamera);
-window.addEventListener('resize', startLidar); // Redraw on resize
+window.addEventListener('resize', startLidar);
 
-// --- WebSocket Connection ---
-socket.onopen = function(event) {
+// WebSocket Connection
+socket.onopen = function() {
     setStatus('Status: Connected to server.', 'success');
-    startLidar(); // Start lidar simulation once connected
+    startLidar();
 };
 
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
-    
-    // You can later add a case here to handle real lidar data
-    // if (data.type === 'lidar') { ... }
-
-    // Update OBD metrics
     for (const key in data) {
         const element = dataElements[key];
         if (element) {
             const value = data[key];
-
-            // Handle null/undefined values gracefully
             if (value === null || typeof value === 'undefined') {
-                if (element.children.length > 0 && element.children[0].tagName === 'SPAN') {
-                    element.children[0].textContent = '---';
-                } else {
-                    element.textContent = '---';
-                }
-                // Cleanup classes
-                if (key === 'ignitionState') element.classList.remove('Off', 'On', 'Running');
-                if (key === 'dtc') element.classList.remove('has-dtc', 'no-dtc');
+                const target = element.querySelector('span') || element;
+                target.textContent = '---';
                 continue;
             }
-            
             if (key === 'ignitionState') {
                 element.textContent = value;
-                element.classList.remove('Off', 'On', 'Running');
-                element.classList.add(value);
+                element.className = `metric-value text-status ${value}`;
             } else if (key === 'dtc') {
                 const hasDTCs = value && value.length > 0 && value !== 'None';
                 element.textContent = hasDTCs ? value : 'None';
-                element.classList.remove('has-dtc', 'no-dtc');
-                element.classList.add(hasDTCs ? 'has-dtc' : 'no-dtc');
+                element.className = `metric-value small-text dtc ${hasDTCs ? 'has-dtc' : 'no-dtc'}`;
             } else if (key === 'idlingTime') {
                 const date = new Date(0);
                 date.setSeconds(value);
                 element.textContent = date.toISOString().substr(11, 8);
             } else if (typeof value === 'number') {
-                // Find the span if it exists, otherwise use the element itself
                 const target = element.querySelector('span') || element;
                 target.textContent = Number(value).toFixed(1);
             } else {
@@ -199,17 +151,14 @@ socket.onmessage = function(event) {
     }
 };
 
-socket.onclose = function(event) {
-    setStatus('Status: Disconnected from server. Please restart the Python server and refresh.', 'error');
-    resetDashboard();
+socket.onclose = function() {
+    setStatus('Status: Disconnected. Please restart the server and refresh.', 'error');
     stopCamera();
     if (lidarAnimationId) cancelAnimationFrame(lidarAnimationId);
 };
 
-socket.onerror = function(error) {
-    setStatus('Status: Connection error. Is the Python server running?', 'error');
-    resetDashboard();
+socket.onerror = function() {
+    setStatus('Status: Connection error. Is the server running?', 'error');
     stopCamera();
     if (lidarAnimationId) cancelAnimationFrame(lidarAnimationId);
 };
-
