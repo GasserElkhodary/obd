@@ -1,6 +1,6 @@
 const statusDiv = document.getElementById('status');
 // Use a real URL from your localtunnel or ngrok service
-const socket = new WebSocket('wss://your-url-here.loca.lt'); 
+const socket = new WebSocket('wss:purple-rivers-lay.loca.lt'); 
 const dataElements = {
     rpm: document.getElementById('rpm'),
     speed: document.getElementById('speed'),
@@ -212,3 +212,4 @@ socket.onerror = function(error) {
     stopCamera();
     if (lidarAnimationId) cancelAnimationFrame(lidarAnimationId);
 };
+
