@@ -1,5 +1,5 @@
 const statusDiv = document.getElementById('status');
-const socket = new WebSocket("wss://regulations-toronto-feb-zoloft.trycloudflare.com");
+const socket = new WebSocket("const socket = new WebSocket('ws://67.173.188.102:8080');");
 
 const dataElements = {
     rpm: document.getElementById('rpm'),
@@ -153,4 +153,5 @@ socket.onerror = function(error) {
     stopCamera();
 
 };
+
 
