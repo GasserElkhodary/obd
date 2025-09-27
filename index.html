@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Vehicle Telemetry Dashboard</title>
-    <link rel="stylesheet" href="./dashboard.css">
+    <link rel="stylesheet" href="./dashboard.css" />
 </head>
 <body>
-
     <h1>Real-Time Vehicle Diagnostics</h1>
-    
+
     <!-- Controls -->
     <div id="controls">
         <div id="camera-controls">
@@ -20,20 +19,26 @@
             <button id="lidar-toggle-btn">Show LiDAR Feed</button>
             <div id="lidar-toggle-status">LiDAR is OFF</div>
         </div>
+        <div id="connection-controls">
+            <label for="ws-url">Telemetry WS:</label>
+            <input id="ws-url" type="text" value="ws://localhost:8765" />
+            <button id="ws-connect-btn">Connect</button>
+            <div id="ws-status">WS: disconnected</div>
+        </div>
     </div>
 
     <!-- Camera + LiDAR Feeds -->
     <div id="camera-lidar-container">
         <!-- Camera -->
-        <div id="camera-container">
+        <div id="camera-container" class="hidden">
             <video id="cameraFeed" autoplay playsinline muted></video>
-            <div id="camera-placeholder" style="display: none;">Accessing Camera...</div>
+            <div id="camera-placeholder">Accessing Camera...</div>
         </div>
 
         <!-- LiDAR -->
-        <div id="lidar-container">
+        <div id="lidar-container" class="hidden">
             <canvas id="lidarFeed"></canvas>
-            <div id="lidar-placeholder" style="display: none;">Accessing LiDAR...</div>
+            <div id="lidar-placeholder">Accessing LiDAR...</div>
         </div>
     </div>
 
@@ -103,6 +108,6 @@
         </div>
     </div>
 
-    <script src="dashbaord.js"></script>
+    <script src="./dashbaord.js"></script>
 </body>
 </html>
