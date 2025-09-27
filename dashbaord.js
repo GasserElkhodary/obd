@@ -1,5 +1,5 @@
 const statusDiv = document.getElementById('status');
-const socket = new WebSocket('wss://extracurricular-rob-judgmatic.ngrok-free.d');
+const socket = new WebSocket('wss://kind-nights-share.loca.lt');
 const dataElements = {
     rpm: document.getElementById('rpm'),
     speed: document.getElementById('speed'),
@@ -152,6 +152,7 @@ socket.onerror = function(error) {
     stopCamera();
 
 };
+
 
 
 
