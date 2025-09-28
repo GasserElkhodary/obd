@@ -1,6 +1,5 @@
 const statusDiv = document.getElementById('status');
-const socket = new WebSocket('wss:///new-cups-thank.loca.lt
-'); 
+const socket = new WebSocket('wss:///slick-ducks-drive.loca.lt'); 
 const dataElements = {
     rpm: document.getElementById('rpm'),
     speed: document.getElementById('speed'),
@@ -163,6 +162,7 @@ socket.onerror = function() {
     stopCamera();
     if (lidarAnimationId) cancelAnimationFrame(lidarAnimationId);
 };
+
 
 
 
