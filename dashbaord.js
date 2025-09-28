@@ -1,5 +1,6 @@
 const statusDiv = document.getElementById('status');
-const socket = new WebSocket('wss:///young-pumas-drum.loca.lt'); 
+const socket = new WebSocket('wss:///new-cups-thank.loca.lt
+'); 
 const dataElements = {
     rpm: document.getElementById('rpm'),
     speed: document.getElementById('speed'),
@@ -162,5 +163,6 @@ socket.onerror = function() {
     stopCamera();
     if (lidarAnimationId) cancelAnimationFrame(lidarAnimationId);
 };
+
 
 
